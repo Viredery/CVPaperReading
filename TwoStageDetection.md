@@ -7,9 +7,13 @@
 同时，由于目标在原图中的尺度差异较大，单一分辨率的特征无法很好地预测较大和较小尺度的目标，因此引入多尺度建模方法来解决不同尺度目标的预测问题。
 
 1. 两阶段检测的总体流程
+
 *[R-CNN]*Rich feature hierarchies for accurate object detection and semantic segmentation *[CVPR’ 14]*
+
 *[Fast R-CNN]*Fast R-CNN *[ICCV’ 15]*
+
 *[Faster R-CNN, RPN]*Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks *[NIPS’ 15]*
+
 
 2. 多尺度建模方法
 
