@@ -8,21 +8,46 @@
 
 1. 两阶段检测的总体流程
 
-   *[R-CNN]*Rich feature hierarchies for accurate object detection and semantic segmentation *[CVPR’ 14]*
+   **[R-CNN]** Rich feature hierarchies for accurate object detection and semantic segmentation **[CVPR’ 14]**
 
-   *[Fast R-CNN]*Fast R-CNN *[ICCV’ 15]*
+   **[Fast R-CNN]** Fast R-CNN **[ICCV’ 15]**
 
-   *[Faster R-CNN, RPN]*Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks *[NIPS’ 15]*
+   **[Faster R-CNN, RPN]** Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks **[NIPS’ 15]**
 
 
 2. 多尺度建模方法
 
-   *[FPN]*Feature Pyramid Networks for Object Detection *[CVPR’ 17]*   
+   **[FPN]** Feature Pyramid Networks for Object Detection *[CVPR’ 17]*   
    目前最流行的方法。输出多个不同分辨率的特征图。分辨率大的特征图检测小目标；分辨率小的特征图检测大目标
 
-   *[SNIP]*An Analysis of Scale Invariance in Object Detection – SNIP *[CVPR’ 18]*   
+   **[SNIP]** An Analysis of Scale Invariance in Object Detection – SNIP **[CVPR’ 18]**   
    输入为图像金字塔，对于图像金字塔中的每一个图像，仅选择固定尺度范围内的目标进行训练（反向传播）。也就是说，原图像放大后仅检测小目标，原图像缩小后仅检测大目标。由于每个目标在训练时都会有几个不同的尺寸，那么总有一个尺寸是在指定的尺寸范围内。
 
-   *[TridentNet]*Scale-Aware Trident Networks for Object Detection *[CVPR’ 19]*    
+   **[TridentNet]** Scale-Aware Trident Networks for Object Detection **[CVPR’ 19]**    
    输出多个不同感受野的特征图。以ResNet50为例，将Stage5卷积移至RCNN，将Stage4分成三个分支，不同分支中的3x3卷积的dilated分别设置为1，2和3，不同分支共享权重。同时，对于不同的分支，选择特定尺度范围内的目标进行训练（反向传播）。也就是说小目标和大目标分别在不同的分支中检测，最后三个分支的预测结果通过NMS结合起来。
 
+
+### 二、骨架网络设计和改进
+
+1. 整体结构设计
+
+    常见的Backbone为ResNet、ResNeXt、Inception-ResNet，针对轻量化设计要求，也可以使用MobileNet等网络。这些网络在分类任务中被提出，被运用在了各种视觉任务中。同时，也有些网络针对位置敏感问题设计的网络。Hourglass和HRNet网络设计的出发点都是低分辨率的语义信息和高分辨率的位置信息的融合。    
+
+    **[Hourglass]** Stacked Hourglass Networks for Human Pose Estimation **[CVPR’ 16]**    
+    Hourglass网络类似于UNet，上采样阶段和下采样阶段对称，对应的相同分辨率大小的特征图之间的skip connection（UNet）替换为残差块（Hourglass）。CenterNet(Keypoint Triplets)的骨架网络为Hourglass。    
+
+    **[HRNet]** Deep High-Resolution Representation Learning for Human Pose Estimation **[CVPR’ 19]**    
+    该模型是通过在高分辨率特征图主网络逐渐并行加入低分辨率特征图子网络，不同网络实现多尺度融合与特征提取实现的。    
+
+2. 模块设计
+
+    **[DCN]** Deformable Convolutional Networks **[ICCV’ 17]**    
+    **[DCNv2]** Deformable ConvNets v2: More Deformable, Better Results **[CVPR’ 19]**    
+    提出可变形卷积，将其替换残差块中的3x3卷积可以稳定提分。注意，一个可变形卷积实际上进行了两次卷积运算。    
+
+    **[NL]** Non-local Neural Networks **[CVPR’ 18]**     
+    在高阶语义层（如Stage4）中引入Non-local层（类似Self-Attention）。由于Non-local计算量较大，**CCNet**提出局部平均，在不下降性能的情况下减少计算量。**GCNet**将简化的Non-local和SE Block结合起来。    
+
+    **[WS]** Weight Standardization    
+    **[GN]** Group Normalization **[ECCV’ 18]**    
+    基于ResNet50或者ResNet101的目标检测网络的训练中，一般一个GPU中图片的batch size为1或者2，使用BN会损害训练效果，因此一般将BN层的权重固定住。这里将卷积层的权重做标准化，BN替换成GN，适合目标检测、实例分割等batch size较小的任务的训练。另一种做法，是在多GPU训练的情况下，将BN替换成Sync BN。    
