@@ -31,7 +31,7 @@
 
 1. 整体结构设计
 
-    常见的Backbone为ResNet、ResNeXt、Inception-ResNet，针对轻量化设计要求，也可以使用MobileNet等网络。这些网络在分类任务中被提出，被运用在了各种视觉任务中。同时，也有些网络针对位置敏感问题设计的网络。Hourglass和HRNet网络设计的出发点都是低分辨率的语义信息和高分辨率的位置信息的融合。    
+    常见的Backbone为ResNet、ResNeXt、Inception-ResNet，针对轻量化设计要求，也可以使用MobileNet等网络。这些网络在分类任务中被提出，被运用在了各种视觉任务中。同时，也有些网络针对位置敏感问题设计的网络。DetNet网络中将最后一阶段的stride从2减小到1并将dilated设置为2也是常见的针对位置敏感问题的优化方法。Hourglass和HRNet网络设计的出发点都是低分辨率的语义信息和高分辨率的位置信息的融合。    
 
     **[Hourglass]** Stacked Hourglass Networks for Human Pose Estimation **[CVPR’ 16]**    
     Hourglass网络类似于UNet，上采样阶段和下采样阶段对称，对应的相同分辨率大小的特征图之间的skip connection（UNet）替换为残差块（Hourglass）。CenterNet(Keypoint Triplets)的骨架网络为Hourglass。    
@@ -51,3 +51,27 @@
     **[WS]** Weight Standardization    
     **[GN]** Group Normalization **[ECCV’ 18]**    
     基于ResNet50或者ResNet101的目标检测网络的训练中，一般一个GPU中图片的batch size为1或者2，使用BN会损害训练效果，因此一般将BN层的权重固定住。这里将卷积层的权重做标准化，BN替换成GN，适合目标检测、实例分割等batch size较小的任务的训练。另一种做法，是在多GPU训练的情况下，将BN替换成Sync BN。    
+
+
+### 三、多尺度建模改进
+
+1. 基于FPN的改进  
+
+    **[PANet]** Path Aggregation Network for Instance Segmentation **[CVPR’ 18]**     
+    FPN的信息流是自上而下，PANet在FPN的基础上再通过自下而上的路径增强，在较底层用准确的定位信号增强了整个特征分层，从而缩短了较底层和最高层特征之间的信息路径。    
+    同时，在RoI Pooling阶段，不是使用一层的feature map提特征，而是结合了所有层的信息。   
+    
+    **[Libra R-CNN]** Libra R-CNN: Towards Balanced Learning for Object Detection **[CVPR’ 19]**        
+    也是将FPN中不同层的信息进行融合，主要分为四步，rescale到同一尺度，融合（相加），计算Non-local，最后将得到的融合信息加强到不同层的feature map中   
+ 
+    **[NAS-FPN]** NAS-FPN: Learning Scalable Feature Pyramid Architecture for Object Detection **[CVPR’ 19]**      
+    用NAS寻找最优的FPN结构   
+
+2. 基于SNIP的改进
+
+    **[SNIPER]** SNIPER: Efficient Multi-Scale Training  **[NIPS' 18]**   
+    SNIPER通过生成Patch的方式，加快SNIP的训练速度   
+
+    **[AutoFocus]** AutoFocus: Efficient Multi-Scale Inference   
+    AutoFocus加快推断速度   
+    
