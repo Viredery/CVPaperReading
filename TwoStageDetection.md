@@ -79,7 +79,7 @@
 ### 四、RPN改进
 
 * **[GA-RPN]** Region Proposal by Guided Anchoring **[CVPR' 19]**      
-   大多数解决方案，都是根据不同的数据集，去设计每个位置的预选框（Anchor）的尺度和长宽比（即调参，调整先验假设）。GA-RPN是训练过程中指导预选框的生成。对每层特征图的每一个位置，通过训练去预测这个位置对应的预选框的高和宽。
+   大多数解决方案，都是根据不同的数据集，去设计每个位置的预选框（Anchor）的尺度和长宽比（即调参，调整先验假设）。GA-RPN是训练过程中指导预选框的生成。对每层特征图的每一个位置，通过训练去预测这个位置对应的预选框的高和宽(**Bounded IoU Loss**)。
 
 ### 五、RoI池化方式
 
@@ -114,6 +114,10 @@
 
 
 ### 七、损失函数及后处理
+
+
+* Multi-Task Learning Using Uncertainty to Weigh Losses for Scene Geometry and Semantics    
+* Auxiliary Tasks in Multi-task Learning   
 
 * GIoU Loss
 * KL Loss(Softer NMS)
