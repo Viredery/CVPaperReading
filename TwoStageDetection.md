@@ -31,7 +31,8 @@
 
 1. 整体结构设计
 
-    常见的Backbone为ResNet、ResNeXt、Inception-ResNet，针对轻量化设计要求，也可以使用MobileNet等网络。这些网络在分类任务中被提出，被运用在了各种视觉任务中。同时，也有些网络针对位置敏感问题设计的网络。DetNet网络中将最后一阶段的stride从2减小到1并将dilated设置为2也是常见的针对位置敏感问题的优化方法。Hourglass和HRNet网络设计的出发点都是低分辨率的语义信息和高分辨率的位置信息的融合。    
+    常见的Backbone为ResNet、ResNeXt、Inception-ResNet，针对轻量化设计要求，也可以使用MobileNet等网络。这些网络在分类任务中被提出，被运用在了各种视觉任务中。同时，也有些网络针对位置敏感问题设计的网络。DetNet网络中将最后一阶段的stride从2减小到1并将dilated设置为2也是常见的针对位置敏感问题的优化方法。CVPR19中也有NAS去搜索目标检测中最优骨架网络结构的工作。    
+    Hourglass和HRNet网络设计的出发点都是低分辨率的语义信息和高分辨率的位置信息的融合。     
 
     * **[Hourglass]** Stacked Hourglass Networks for Human Pose Estimation **[CVPR' 16]**    
        Hourglass网络类似于UNet，上采样阶段和下采样阶段对称，对应的相同分辨率大小的特征图之间的skip connection（UNet）替换为残差块（Hourglass）。CenterNet(Keypoint Triplets)的骨架网络为Hourglass。    
@@ -82,8 +83,70 @@
 
 ### 五、RoI池化方式
 
-* **[Mask R-CNN]** Mask R-CNN **[ICCV' 17]**
-   提出RoIAlign，将最大池化过程替换成了双线性插值。此外加入分割损失后，对回归任务有效果上的提升。
+* **[Mask R-CNN]** Mask R-CNN **[ICCV' 17]**   
+   提出RoIAlign，将最大池化过程替换成了双线性插值。此外加入分割损失后，对回归任务有效果上的提升。   
 
-* **[IoUNet]** Acquisition of Localization Confidence for Accurate Object Detection **[ECCV' 18]**
-   提出PrRoIPooling，将RoIAlign上选择一个坐标点进行双线性插值，改为积分的方式，对全局进行插值操作.
+* **[IoUNet]** Acquisition of Localization Confidence for Accurate Object Detection **[ECCV' 18]**   
+   提出PrRoIPooling，将RoIAlign上选择一个坐标点进行双线性插值，改为积分的方式，对全局进行插值操作。   
+
+### 六、RCNN改进
+
+1. 针对分类和检测的根本矛盾问题
+
+   图像分类要求图像具有平移不变性，而目标检测则要求图像具有位置敏感性。
+   
+   * **[R-FCN]** R-FCN: Object Detection via Region-based Fully Convolutional Networks **[NIPS' 16]**
+     **[R-FCN++]** R-FCN++: Towards Accurate Region-Based Fully Convolutional Networks for Object Detection
+      R-FCN中抛弃了全连接层，而是使用卷积层结合位置敏感RoI池化层，使得RoI-aware的操作只有一层。
+
+   * Rethinking Classification and Localization in R-CNN
+  
+   * Grid RCNN
+     Grid RCNN Plus
+     
+2. 关联不同RoI间的信息
+
+    * Relation Network
+
+3. 提高分类检测的能力
+
+    * Cascade RCNN
+
+
+### 七、损失函数及后处理
+
+* GIoU Loss
+* KL Loss(Softer NMS)
+
+* Soft-NMS
+* IoU-Net
+ （MS R-CNN）
+
+### 八、采样方式
+
+* Prime Sample Attention in Object Detection 
+* Libra R-CNN
+   
+### 九、训练方式
+
+* MegDet
+* OHEM
+* Rethinking ImageNet Pre-training
+* RePr
+* Bag of Tricks for Image Classification with Convolutional Neural Networks
+* Bag of Freebies for Training Object Detection Neural Networks
+* Augmentation for small object detection
+
+### 十、其他目标检测
+
+1. 领域迁移
+
+   * Domain Adaptive Faster R-CNN for Object Detection in the Wild 
+   * Few-shot Adaptive Faster R-CNN
+   * Strong-Weak Distribution Alignment 
+
+2. 蒸馏
+
+   * Quantization Mimic: Towards Very Tiny CNN for Object Detection
+   
+3. 图网络
