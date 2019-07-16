@@ -58,6 +58,8 @@
 
 1. 基于FPN的改进  
 
+    FPN的改进有两个方向。一是研究如何更好的生成金字塔特征，如**PANet**和**NAS-FPN**；二是如果更好地出金字塔特征中提取RoI特征，如**PANet**和**Libra R-CNN**，一阶段目标检测网络**FSAF**种也提出了一种有趣的方法。    
+
     * **[PANet]** Path Aggregation Network for Instance Segmentation **[CVPR' 18]**     
        FPN的信息流是自上而下，PANet在FPN的基础上再通过自下而上的路径增强，在较底层用准确的定位信号增强了整个特征分层，从而缩短了较底层和最高层特征之间的信息路径。    
     同时，在RoI Pooling阶段，不是使用一层的feature map提特征，而是结合了所有层的信息。   
@@ -80,6 +82,8 @@
 
 * **[GA-RPN]** Region Proposal by Guided Anchoring **[CVPR' 19]**      
    大多数解决方案，都是根据不同的数据集，去设计每个位置的预选框（Anchor）的尺度和长宽比（即调参，调整先验假设）。GA-RPN是训练过程中指导预选框的生成。对每层特征图的每一个位置，通过训练去预测这个位置对应的预选框的高和宽(**Bounded IoU Loss**)。
+
+* 19年出了很多Anchor-Free的论文，其实两阶段网络也可能完全舍弃Anchor机制。比如将RPN部分换成**FCOS**的头(Head)，RCNN部分保持不变，或者换成**Grid RCNN**等。
 
 ### 五、RoI池化方式
 
@@ -126,15 +130,18 @@
 
 ### 七、损失函数及后处理
 
-
 * Multi-Task Learning Using Uncertainty to Weigh Losses for Scene Geometry and Semantics    
-  Auxiliary Tasks in Multi-task Learning   
+  Auxiliary Tasks in Multi-task Learning    
+   损失函数权重的自动学习。对于多任务学习存在多个损失函数的情况，不同损失函数的权重是个比较重要的超参数。手动调参的计算代码巨大。本文提出了将该权重作为一个参数，在模型训练的过程中去自动地更新、学习。   
+    
+* **[GIoU Loss]** Generalized Intersection over Union: A Metric and A Loss for Bounding Box Regression **[CVPR' 19]**    
+   出发点是常用的Smooth L1损失不是基于IoU优化。而IoU损失有两个问题，一是在GT和预测的框的IoU为0时没有梯度，二是IoU损失对于不同重叠的方式的惩罚力度是一样的。因此提出了GIoU损失，更加严格地进行了约束。
 
-* GIoU Loss
-* KL Loss(Softer NMS)
-
-* Soft-NMS
-
+* **[KL Loss(Softer NMS)]** Bounding Box Regression with Uncertainty for Accurate Object Detection **[CVPR' 19]**    
+   对框的四条边的不确定性进行建模。出发点和上面的损失函数权重的自学习差不多。引入KL loss来评估 ground truth 和 预测的 bounding box 分布之间的"差距"。学到的“差距”（或叫“不确定性”）的变性，在后处理的时候作为Box Voting的权重，即Softer NMS    
+  
+* **[Soft-NMS]** Improving Object DetectionWith One Line of Code **[ICCV' 17]**    
+   对于两个距离很近的目标，在NMS过程中可能会因为IoU过大而被舍弃。Soft-NMS不会舍弃预测出来的框，而是将得分次高的框的得分进行抑制。
 
 ### 八、采样方式
 
