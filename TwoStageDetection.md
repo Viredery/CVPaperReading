@@ -95,36 +95,46 @@
 
    图像分类要求图像具有平移不变性，而目标检测则要求图像具有位置敏感性。
    
-   * **[R-FCN]** R-FCN: Object Detection via Region-based Fully Convolutional Networks **[NIPS' 16]**
-     **[R-FCN++]** R-FCN++: Towards Accurate Region-Based Fully Convolutional Networks for Object Detection
+   * **[R-FCN]** R-FCN: Object Detection via Region-based Fully Convolutional Networks **[NIPS' 16]**    
+     **[R-FCN++]** R-FCN++: Towards Accurate Region-Based Fully Convolutional Networks for Object Detection    
       R-FCN中抛弃了全连接层，而是使用卷积层结合位置敏感RoI池化层，使得RoI-aware的操作只有一层。
 
-   * Rethinking Classification and Localization in R-CNN
-  
-   * Grid RCNN
-     Grid RCNN Plus
+   * **[Double-Head RCNN]** Double-Head RCNN: Rethinking Classification and Localization for Object Detection    
+      做了一堆实验，结论是，box回归前用卷积，class分类前用全连接效果最好。这里卷积使用的是残差块和Non-local块。    
+      
+   * **[Grid RCNN]** Grid RCNN    
+     **[Grid RCNN Plus]** Grid RCNN Plus: Faster and Better    
+      由于RCNN阶段GT和RoI的交并比大于0.5为正，因此对RoIAlign后的结果上采样四倍，可以完全覆盖原GT，然后预测目标的九个点（边框上八个点，目标中间一个点，类似热点图）。即完全把回归损失变为分类损失。    
      
 2. 关联不同RoI间的信息
 
-    * Relation Network
+   * **[Relation Network]** Relation Networks for Object Detection     
+      简而言之就是将前面提到的Non-local放在了RCNN中，然后将NMS后处理也改为用Relation来做。    
 
-3. 提高分类检测的能力
+3. 提高分类和检测能力
 
-    * Cascade RCNN
+   * **[Cascade RCNN]** Cascade R-CNN: Delving into High Quality Object Detection    
+      一个标准的通用做法，就是不断地去串联同一个模块，不断地去精修结果，**Stacked Hourglass Network** 也是这么做的    
+       
+4. 预测的分类得分无法指导后处理的问题
+ 
+   这个问题也是19年前后大家开始关注的一个问题。RCNN系列的训练过程中，认为交并比大于0.5就算正例，因此，模型本身并不能使IoU越大的框的得分越高。**Mask Score R-CNN**中也指出，分类得分并不能指导每个Mask预测情况的好坏。
+         	
+   * **[IoUNet]** Acquisition of Localization Confidence for Accurate Object Detection **[ECCV' 18]**
+      增加一个分支去预测回归框和GT的IoU，用这个IoU值去指导NMS
 
 
 ### 七、损失函数及后处理
 
 
 * Multi-Task Learning Using Uncertainty to Weigh Losses for Scene Geometry and Semantics    
-* Auxiliary Tasks in Multi-task Learning   
+  Auxiliary Tasks in Multi-task Learning   
 
 * GIoU Loss
 * KL Loss(Softer NMS)
 
 * Soft-NMS
-* IoU-Net
- （MS R-CNN）
+
 
 ### 八、采样方式
 
@@ -133,24 +143,24 @@
    
 ### 九、训练方式
 
-* MegDet
-* OHEM
-* Rethinking ImageNet Pre-training
-* RePr
-* Bag of Tricks for Image Classification with Convolutional Neural Networks
-* Bag of Freebies for Training Object Detection Neural Networks
-* Augmentation for small object detection
+* MegDet   
+* OHEM   
+* Rethinking ImageNet Pre-training   
+* RePr   
+* Bag of Tricks for Image Classification with Convolutional Neural Networks    
+* Bag of Freebies for Training Object Detection Neural Networks    
+* Augmentation for small object detection    
 
 ### 十、其他目标检测
 
 1. 领域迁移
 
-   * Domain Adaptive Faster R-CNN for Object Detection in the Wild 
-   * Few-shot Adaptive Faster R-CNN
-   * Strong-Weak Distribution Alignment 
+   * Domain Adaptive Faster R-CNN for Object Detection in the Wild    
+   * Few-shot Adaptive Faster R-CNN   
+   * Strong-Weak Distribution Alignment    
 
 2. 蒸馏
 
-   * Quantization Mimic: Towards Very Tiny CNN for Object Detection
+   * Quantization Mimic: Towards Very Tiny CNN for Object Detection   
    
 3. 图网络
