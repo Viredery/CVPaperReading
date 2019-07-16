@@ -80,10 +80,20 @@
     
 ### 四、RPN改进
 
-* **[GA-RPN]** Region Proposal by Guided Anchoring **[CVPR' 19]**      
-   大多数解决方案，都是根据不同的数据集，去设计每个位置的预选框（Anchor）的尺度和长宽比（即调参，调整先验假设）。GA-RPN是训练过程中指导预选框的生成。对每层特征图的每一个位置，通过训练去预测这个位置对应的预选框的高和宽(**Bounded IoU Loss**)。
+1. 网络结构改进
 
-* 19年出了很多Anchor-Free的论文，其实两阶段网络也可能完全舍弃Anchor机制。比如将RPN部分换成**FCOS**的头(Head)，RCNN部分保持不变，或者换成**Grid RCNN**等。
+   * **[GA-RPN]** Region Proposal by Guided Anchoring **[CVPR' 19]**      
+      大多数解决方案，都是根据不同的数据集，去设计每个位置的预选框（Anchor）的尺度和长宽比（即调参，调整先验假设）。GA-RPN是训练过程中指导预选框的生成。对每层特征图的每一个位置，通过训练去预测这个位置对应的预选框的高和宽(**Bounded IoU Loss**)。
+
+
+2. 采样方式改进
+
+   * **[Libra R-CNN]** Libra R-CNN: Towards Balanced Learning for Object Detection **[CVPR' 19]**    
+      常规过程中，一个短边800像素的图片，会产生20万左右的Anchor，绝大多数都是负样本，随机进行采样，会产生很多简单背景作为负样本，无法很好地把握目标和非目标之间的辨识度。Libra R-CNN提出了一种基于IoU的采样方式。
+
+3. Anchor机制
+
+   * 19年出了很多Anchor-Free的论文，其实两阶段网络也可能完全舍弃Anchor机制。比如将RPN部分换成**FCOS**的头(Head)，RCNN部分保持不变，或者换成**Grid RCNN**等。这里没提改进，是因为目标我们没法证明其中一种方法优于另一种。
 
 ### 五、RoI池化方式
 
@@ -143,22 +153,34 @@
 * **[Soft-NMS]** Improving Object DetectionWith One Line of Code **[ICCV' 17]**    
    对于两个距离很近的目标，在NMS过程中可能会因为IoU过大而被舍弃。Soft-NMS不会舍弃预测出来的框，而是将得分次高的框的得分进行抑制。
 
-### 八、采样方式
-
-* Prime Sample Attention in Object Detection 
-* Libra R-CNN
+* Prime Sample Attention in Object Detection    
+   这篇论文的出发点和上面几篇不一样。大多数情况下，一个共识是，大量的简单样本对模型的参数更新方向的帮助不大（一个例子，比如Triplet Loss中，随机选三元组可能会训不起来，而在同一个batch里做难样本挖掘来生成三元组却有效果）。而这篇论文，在做回归损失的时候，降低了难样本的权重，提高简单样本的权重。论文给出的动机是，在NMS阶段，更好质量的框会保留下来，其他的框被丢弃的，那么，影响最后的指标的是训练过程中的简单样本。刚好与难样本挖掘反其道而行之。    
    
-### 九、训练方式
 
-* MegDet   
-* OHEM   
+
+### 八、训练方式
+
+* **[MegNet]** MegDet: A Large Mini-Batch Object Detector    
+   Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour    
+   这两篇论文介绍了在大batch size的情况下，如何训练模型
+   
+* **[OHEM]** Training Region-based Object Detectors with Online Hard Example Mining **[CVPR' 16]**    
+   各种问题下的常用Tricks
+   
 * Rethinking ImageNet Pre-training   
-* RePr   
-* Bag of Tricks for Image Classification with Convolutional Neural Networks    
-* Bag of Freebies for Training Object Detection Neural Networks    
-* Augmentation for small object detection    
+   指出不使用预训练模型，在较长的训练时间下，可以得到不劣于使用预训练分类权重的模型   
+   
+* **[RePr]** RePr: Improved Training of Convolutional Filters **[CVPR' 19]**       
+   一种学习率Schedule方法
 
-### 十、其他目标检测
+* Bag of Tricks for Image Classification with Convolutional Neural Networks    
+  Bag of Freebies for Training Object Detection Neural Networks    
+   分类和检测的Tricks
+  
+* Augmentation for small object detection 
+   针对小目标的数据增强方法，思路是将小目标拷贝到图中的任意位置
+
+### 九、其他目标检测
 
 1. 领域迁移
 
@@ -170,4 +192,4 @@
 
    * Quantization Mimic: Towards Very Tiny CNN for Object Detection   
    
-3. 图网络
+3. 图网络学习
