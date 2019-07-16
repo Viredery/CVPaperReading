@@ -177,7 +177,7 @@
   Bag of Freebies for Training Object Detection Neural Networks    
    分类和检测的Tricks
   
-* Augmentation for small object detection 
+* Augmentation for small object detection    
    针对小目标的数据增强方法，思路是将小目标拷贝到图中的任意位置
 
 ### 九、其他目标检测
