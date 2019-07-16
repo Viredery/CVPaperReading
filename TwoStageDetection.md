@@ -120,7 +120,7 @@
  
    这个问题也是19年前后大家开始关注的一个问题。RCNN系列的训练过程中，认为交并比大于0.5就算正例，因此，模型本身并不能使IoU越大的框的得分越高。**Mask Score R-CNN**中也指出，分类得分并不能指导每个Mask预测情况的好坏。
          	
-   * **[IoUNet]** Acquisition of Localization Confidence for Accurate Object Detection **[ECCV' 18]**
+   * **[IoUNet]** Acquisition of Localization Confidence for Accurate Object Detection **[ECCV' 18]**    
       增加一个分支去预测回归框和GT的IoU，用这个IoU值去指导NMS
 
 
