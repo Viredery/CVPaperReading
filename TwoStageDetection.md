@@ -31,7 +31,7 @@
 
 1. 整体结构设计
 
-    常见的Backbone为ResNet、ResNeXt、Inception-ResNet，针对轻量化设计要求，也可以使用MobileNet等网络。这些网络在分类任务中被提出，被运用在了各种视觉任务中。同时，也有些网络针对位置敏感问题设计的网络。DetNet网络中将最后一阶段的stride从2减小到1并将dilated设置为2也是常见的针对位置敏感问题的优化方法。CVPR19中也有NAS去搜索目标检测中最优骨架网络结构的工作。    
+    常见的Backbone为ResNet、ResNeXt、Inception-ResNet，针对轻量化设计要求，也可以使用MobileNet等网络。这些网络在分类任务中被提出，被运用在了各种视觉任务中。同时，也有些网络针对位置敏感问题设计的网络。DetNet网络中将最后一阶段的stride从2减小到1并将dilated设置为2也是常见的针对位置敏感问题的优化方法。同时也有NAS去搜索目标检测中最优骨架网络结构 **[DetNas]** 的工作。    
     Hourglass和HRNet网络设计的出发点都是低分辨率的语义信息和高分辨率的位置信息的融合。     
 
     * **[Hourglass]** Stacked Hourglass Networks for Human Pose Estimation **[CVPR' 16]**    
@@ -176,6 +176,9 @@
 * Bag of Tricks for Image Classification with Convolutional Neural Networks    
   Bag of Freebies for Training Object Detection Neural Networks    
    分类和检测的Tricks
+  
+* Learning Data Augmentation Strategies for Object Detection    
+   目前两阶段最常见的数据增强为随机水平翻转。其他还有随便裁剪，颜色扰动，Mixup等，本文通过AutoML方法自动学习有效的数据增强策略
   
 * Augmentation for small object detection    
    针对小目标的数据增强方法，思路是将小目标拷贝到图中的任意位置
