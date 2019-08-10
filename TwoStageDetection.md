@@ -154,15 +154,16 @@
    对于两个距离很近的目标，在NMS过程中可能会因为IoU过大而被舍弃。Soft-NMS不会舍弃预测出来的框，而是将得分次高的框的得分进行抑制。
 
 * Prime Sample Attention in Object Detection    
-   这篇论文的出发点和上面几篇不一样。大多数情况下，一个共识是，大量的简单样本对模型的参数更新方向的帮助不大（一个例子，比如Triplet Loss中，随机选三元组可能会训不起来，而在同一个batch里做难样本挖掘来生成三元组却有效果）。而这篇论文，在做回归损失的时候，降低了难样本的权重，提高简单样本的权重。论文给出的动机是，在NMS阶段，更好质量的框会保留下来，其他的框被丢弃的，那么，影响最后的指标的是训练过程中的简单样本。刚好与难样本挖掘反其道而行之。    
+   这篇论文的出发点和上面几篇不一样。大多数情况下，一个共识是，大量的简单样本对模型的参数更新方向的帮助不大（一个例子，比如Triplet Loss中，随机选三元组可能会训不起来，而在同一个batch里做难样本挖掘来生成三元组却有效果）。而这篇论文，在做回归损失的时候，降低了难样本的权重，提高简单样本的权重。论文给出的动机是，在NMS阶段，更好质量的框会保留下来，其他的框被丢弃的，那么，影响最后的指标的是训练过程中的简单样本。刚好与难样本挖掘反其道而行之       
    
 
 
 ### 八、训练方式
 
-* **[MegNet]** MegDet: A Large Mini-Batch Object Detector    
-   Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour    
-   这两篇论文介绍了在大batch size的情况下，如何训练模型
+* Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour    
+   **[MegNet]** MegDet: A Large Mini-Batch Object Detector    
+   这两篇论文介绍了在大batch size的情况下，如何训练模型。    
+   对于目标检测任务，由于输入图片的尺度较大，导致batch size一般只能设置为1或者2，在这种情况下无法计算BN的准确统计量。这是因为batch较小时，BN计算的统计量存在一定的偏向(bias)，正负样本的比例也存在着抖动和严重的不平衡。因此需要Cross-GPU BN，即SyncBN。外此对于学习率，linear scaling rule和warmup结合的策略加快训练    
    
 * **[OHEM]** Training Region-based Object Detectors with Online Hard Example Mining **[CVPR' 16]**    
    各种问题下的常用Tricks
