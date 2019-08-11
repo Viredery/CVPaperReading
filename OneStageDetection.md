@@ -41,6 +41,8 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
    对于样本不平衡问题，SSD在训练过程中类似RPN，使用采样的方式来保证训练过程中的正负样本比例，不过这里的采样方式是OHEM    
    数据增强：color jitter；random crop；random expand   
 
+* **[RefineDet]** Single-Shot Refinement Neural Network for Object Detection **[CVPR' 18]**    
+   一阶段方法检测精度低的一个主要原因是类不平衡问题。为了提高准确性，一些新方法通过重新设计损失函数或分类来解决类不平衡问题。 RetinaNet重塑标准交叉熵损失，来聚焦训练在一组稀疏的hard examples，降低分配给分类良好的例子的损失权重。虽然一阶段检测器取得了良好的进展，但准确性仍然落后于两阶段方法    
 
 ### 三、RetinaNet
 
@@ -53,15 +55,7 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
     针对RetinaNet中训练和测试的不一致问题，使用了一种类似Cascade但不增加参数的结构，即过两遍regression/classification head    
 
 
-### 四、Two-Stage和One-Stage方法的结合
-
-* **[RefineDet]** Single-Shot Refinement Neural Network for Object Detection **[CVPR' 18]**    
-   一阶段方法检测精度低的一个主要原因是类不平衡问题。为了提高准确性，一些新方法通过重新设计损失函数或分类来解决类不平衡问题。 RetinaNet重塑标准交叉熵损失，来聚焦训练在一组稀疏的hard examples，降低分配给分类良好的例子的损失权重。虽然一阶段检测器取得了良好的进展，但准确性仍然落后于两阶段方法    
-
-
-
-
-### 五、Anchor Free
+### 四、Anchor Free
 
 * DenseBox: Unifying Landmark Localization with End to End Object Detection   
 
@@ -71,7 +65,6 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 * **[FCOS]** FCOS: Fully Convolutional One-Stage Object Detection      
    NAS-FCOS: Fast Neural Architecture Search for Object Detection     
 
-
 * **[FSAF]** Feature Selective Anchor-Free Module for Single-Shot Object Detection    
 
 * FoveaBox: Beyond Anchor-based Object Detector.   
@@ -80,4 +73,4 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 
 
-### 六、AlignDet   
+### 五、AlignDet   
