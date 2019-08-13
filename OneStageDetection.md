@@ -2,8 +2,9 @@
 
 目前来说，一阶段和阶段检测网络的一个主要的区别标准在于是否使用了RoI Pooling。由于没有refinement的过程，设计一阶段网络的关注点放在了  
 
-* 正负样本不平衡问题    
-* feature map和anchor之间的misalignment问题    
+* 正负样本不平衡问题（两阶段检测中RPN过滤掉了大部分简单负样本）     
+* 目标的回归精度问题（两阶段检测中不断修正回归框）    
+* feature map和anchor之间的misalignment问题（两阶段检测中使用RoI Pooling方法）    
 
 
 ### 一、YOLO系列    
@@ -11,21 +12,15 @@
 
 * **[YOLO v1]** You Only Look Once: Unified, Real-Time Object Detection **[CVPR' 16]**    
    YOLO设计的初衷就是实现一个实时的端到端检测网络。输入图片448x448，网络输出特征图7x7。每个位置输出一个(1 + 4) x 2 + C       
-
    这里，每一个位置会输出两个区域框，但其对应类别只有一个。因此在训练时，如果该位置上确实存在目标，那么只选择与ground truth的IoU最大的那个区域框来负责预测该目标，而另一个边界框认为不存在目标     
-
    由于只计算49x2个区域框中是否存在目标的置信度，因此不存在严重的不平衡问题。YOLO中的不平衡处理方式是调整不同损失函数的权重。对于存在目标的区域框的置信度损失，权重为1；而不存在目标的区域框的置信度损失权重为0.5。另外，回归损失的权重为5，回归 normalized x y w h    
 
 * **[YOLO v2]** YOLO9000: Better, Faster, Stronger **[CVPR' 17]**          
    YOLO存在的问题：召回低，回归准确率低。YOLO v2引入Anchor机制，通过对GT聚类来选定Anchor的长宽，网络预测13 x 13 x 5(num_anchor)个区域框（YOLO v2输出的特征图大小为 13 x 13），提高召回     
    （这里的聚类分析的方法，非常适合业务场景中解决Anchor的设定问题）      
-
    引入Anchor后，一方面候选区域框大幅增加，其实就给训练引入了样本不平衡的问题。但这里候选框不到1k个，影响不大。另一方面，引入了feature map和anchor之间的misalignment问题，YOLO v2设计了回归值和其损失函数，将每个位置的Anchor的中心点，限制在该位置范围(32 x 32 pixels)内    
-
    使用Trick：Darknet-19在分类任务中微调；高分辨率特征融合；多尺度训练等    
-
    训练过程：YOLO v2的训练过程，包括损失函数的设计，非常复杂。YOLO v2里面叫box priors而不是叫Anchor（下面都统一称为Anchor），是因为YOLO v2中的回归，依旧是基于位置回归而不是基于Anchor回归，网络训练初期会增加一个损失，使每个位置上回归的区域框去拟合预设框Anchor。此外，YOLO系列中，每一个GT只会分配给一个Anchor，这与R-CNN、SSD等不同    
-
    YOLO9000设计了一个不同任务下的数据集联合训练的方式。
 
 * **[YOLO v3]** YOLOv3: An Incremental Improvement     
@@ -42,7 +37,7 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
    数据增强：color jitter；random crop；random expand   
 
 * **[RefineDet]** Single-Shot Refinement Neural Network for Object Detection **[CVPR' 18]**    
-   一阶段方法检测精度低的一个主要原因是类不平衡问题。为了提高准确性，一些新方法通过重新设计损失函数或分类来解决类不平衡问题。 RetinaNet重塑标准交叉熵损失，来聚焦训练在一组稀疏的hard examples，降低分配给分类良好的例子的损失权重。虽然一阶段检测器取得了良好的进展，但准确性仍然落后于两阶段方法    
+   一阶段方法检测精度低的一个主要原因是类别不平衡问题。RefineDet提出ARM和ODM两个阶段，前者过滤掉简单的负Anchor，为第二阶段的分类器减少搜索空间，并粗调回归框，为第二阶段的回归器提供更好的初始候选框，类似RPN阶段；后者进行精调，类似SSD阶段。训练上，第一阶段使用logit loss，得分低于0.01的Anchor被过滤，第二阶段使用OHEM    
 
 ### 三、RetinaNet
 
@@ -52,12 +47,13 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 * **[ConRetinaNet]** Consistent Optimization for Single-Shot Object Detection    
    提出了训练和测试的不一致问题：训练过程中，设置IoU大于0.5为正例，进行分类和回归计算，但在测试过程中，将原始Anchor训练的得分赋给经过回归调整之后的Anchor。统计发现，分类得分的方差随着IoU的增长会不断变大。
-    针对RetinaNet中训练和测试的不一致问题，使用了一种类似Cascade但不增加参数的结构，即过两遍regression/classification head    
+   针对RetinaNet中训练和测试的不一致问题，使用了一种类似Cascade但不增加参数的结构，即过两遍regression/classification head    
 
 
 ### 四、Anchor Free
 
 * DenseBox: Unifying Landmark Localization with End to End Object Detection   
+   DenseBox这个模型和YOLO一样，是工业界常用的实时目标检测模型。直接预测目标框的坐标相对于像素位置的偏移；引入了landmark任务作为辅助监督；多尺度特征的融合；数据增强等
 
 * **[CornerNet]** CornerNet: Detecting Objects as Paired Keypoints **[ECCV' 18]**.    
 
@@ -74,3 +70,6 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 
 ### 五、AlignDet   
+
+* **[AlignDet]** Revisiting Feature Alignment for One-stage Object Detection
+   针对feature map和anchor之间的misalignment问题，AlignDet结合Anchor的设置情况，固定Deformable Conv里的offset，使得feature map上的每一个位置，都对其对应的anchor的大小和形状敏感
