@@ -49,6 +49,8 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
    提出了训练和测试的不一致问题：训练过程中，设置IoU大于0.5为正例，进行分类和回归计算，但在测试过程中，将原始Anchor训练的得分赋给经过回归调整之后的Anchor。统计发现，分类得分的方差随着IoU的增长会不断变大。
    针对RetinaNet中训练和测试的不一致问题，使用了一种类似Cascade但不增加参数的结构，即过两遍regression/classification head    
 
+* **[Cascade RetinaNet]** Cascade RetinaNet: Maintaining Consistency for Single-Stage Object Detection **[BMVC' 19]**      
+   相比ConRetinaNet，Cascade RetinaNet过两遍不一样的regression/classification head，类似Cascade R-CNN。但一阶段和二阶段的本质不同是两阶段的Cascade结构是接在Region-based CNN部分的，因此不会有misalignment的问题。这篇文章提出的解决方法就是用Deformable Conv    
 
 ### 四、Anchor Free
 
@@ -71,5 +73,5 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 ### 五、AlignDet   
 
-* **[AlignDet]** Revisiting Feature Alignment for One-stage Object Detection
+* **[AlignDet]** Revisiting Feature Alignment for One-stage Object Detection    
    针对feature map和anchor之间的misalignment问题，AlignDet结合Anchor的设置情况，固定Deformable Conv里的offset，使得feature map上的每一个位置，都对其对应的anchor的大小和形状敏感
