@@ -4,10 +4,10 @@
 ### Done temporarily
 
 - TwoStageDetection
+- OneStageDetection
 
 ### Doing
 
-- OneStageDetection
 - Segmentation
 
 ### TODO

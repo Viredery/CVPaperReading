@@ -33,7 +33,9 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 * **[SSD]** SSD: Single Shot MultiBox Detector **[ECCV' 16]**      
    Backbone使用的是加入dilated conv的VGG16。采用多尺度特征图结合Anchor机制用于检测。Anchor机制和R-CNN基本一致，不同尺度上设计不同数量和尺度的Anchor    
+
    对于样本不平衡问题，SSD在训练过程中类似RPN，使用采样的方式来保证训练过程中的正负样本比例，不过这里的采样方式是OHEM    
+
    数据增强：color jitter；random crop；random expand   
 
 * **[RefineDet]** Single-Shot Refinement Neural Network for Object Detection **[CVPR' 18]**    
@@ -54,20 +56,30 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 ### 四、Anchor Free
 
-* DenseBox: Unifying Landmark Localization with End to End Object Detection   
+
+这里面的大多数网络，都是将基于框（Anchor）的检测任务替换成了基于位置（像素点）的检测任务。最近一年，这种Anchor-Free的方法获得了和Anchor-based方法相近的效果，主要得益于：1）FPN的引入，不同大小的目标会被分配到不同的特征图上，减缓了目标之间互相遮挡、不同目标分配到同一个位置上等问题；2）Focal Loss的引入，使得候选的位置可以尽可能多地覆盖原图      
+
+
+* **[DenseBox]** DenseBox: Unifying Landmark Localization with End to End Object Detection    
    DenseBox这个模型和YOLO一样，是工业界常用的实时目标检测模型。直接预测目标框的坐标相对于像素位置的偏移；引入了landmark任务作为辅助监督；多尺度特征的融合；数据增强等
 
-* **[CornerNet]** CornerNet: Detecting Objects as Paired Keypoints **[ECCV' 18]**.    
-
+* **[CornerNet]** CornerNet: Detecting Objects as Paired Keypoints **[ECCV' 18]**      
+   CornerNet-Lite: Efficient Keypoint Based Object Detection    
+   CornerNet不再是基于Anchor或者是基于位置点，而是输出两个热力图，分别预测目标的一对关键点（左上角和右下角），同时预测关键点的Offsets得到更精准的位置。最后，预测一个embedding值，来拉近相关的关键点，拉远不相关的关键点     
+    介绍了一种叫做Corner Pooling的方式，以及一种embedding的训练方式     
  
 * **[FCOS]** FCOS: Fully Convolutional One-Stage Object Detection      
    NAS-FCOS: Fast Neural Architecture Search for Object Detection     
+   输出三组特征图，分别是每一个像素点应该分配的目标，该像素点到目标的边界的距离，以及该像素点到目标中心的距离     
+
 
 * **[FSAF]** Feature Selective Anchor-Free Module for Single-Shot Object Detection    
+   结合Anchor-based预测头和Anchor-free预测头，然后把两者的结果结合起来。对于Anchor-free部分。目标的损失值会在所有的特征图上进行计算，但只有损失值最小的那个特征图才会计算该目标的反向传播值    
 
-* FoveaBox: Beyond Anchor-based Object Detector.   
+* **[CenterNet]** Objects as Points    
+   类似人体姿态评估的做法，输出两个热力图，一个预测目标的中心点，一个预测目标的长和宽。这里，只有一个特征图去预测目标的类型和位置        
 
-* Objects as Points.   
+* FoveaBox: Beyond Anchor-based Object Detector   
 
 
 
