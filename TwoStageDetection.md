@@ -163,7 +163,8 @@
 * Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour    
    **[MegNet]** MegDet: A Large Mini-Batch Object Detector    
    这两篇论文介绍了在大batch size的情况下，如何训练模型。    
-   对于目标检测任务，由于输入图片的尺度较大，导致batch size一般只能设置为1或者2，在这种情况下无法计算BN的准确统计量。这是因为batch较小时，BN计算的统计量存在一定的偏向(bias)，正负样本的比例也存在着抖动和严重的不平衡。因此需要Cross-GPU BN，即SyncBN。外此对于学习率，linear scaling rule和warmup结合的策略加快训练    
+   对于目标检测任务，由于输入图片的尺度较大，导致batch size一般只能设置为1或者2，在这种情况下无法计算BN的准确统计量。这是因为batch较小时，BN计算的统计量存在一定的偏向性(bias)，正负样本的比例也存在着抖动和严重的不平衡。因此需要Cross-GPU BN，即SyncBN，来增加每一次更新所需要统计的图像数量。（这里，batch size和BN size不一定相等）     
+   外此对于学习率，linear scaling rule和warmup结合的策略加快训练。linear scaling rule策略：一般两阶段阶段实验中常用的设置是batch size为16，学习率为0.02，那么这个策略就是batch size增大多少倍，学习率就增大同样的倍数。在网络训练初期，较大的学习率导致梯度变化剧烈，因此引入warmup策略      
    
 * **[OHEM]** Training Region-based Object Detectors with Online Hard Example Mining **[CVPR' 16]**    
    各种问题下的常用Tricks
@@ -181,8 +182,6 @@
 * Learning Data Augmentation Strategies for Object Detection    
    目前两阶段最常见的数据增强为随机水平翻转。其他还有随便裁剪，颜色扰动，Mixup等，本文通过AutoML方法自动学习有效的数据增强策略
   
-* Augmentation for small object detection    
-   针对小目标的数据增强方法，思路是将小目标拷贝到图中的任意位置
 
 ### 九、其他目标检测
 

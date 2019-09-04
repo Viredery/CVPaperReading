@@ -8,11 +8,11 @@
 
 ### Doing
 
+- Detection
 - Segmentation
 
 ### TODO
 
-- Detection
 - ImageClassification
 - PoseEstimation
 - ReIdentification
