@@ -37,6 +37,11 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
    对于样本不平衡问题，SSD在训练过程中类似RPN，使用采样的方式来保证训练过程中的正负样本比例，不过这里的采样方式是OHEM    
 
    数据增强：color jitter；random crop；random expand   
+   
+   特点：SSD使用随机裁剪，使得小目标被放大，每个像素对应的Anchor得到更充分地训练。但另一方面，检测小目标所用的特征图来自于浅层信息（高分辨率信息），缺少低分辨率的语义信息，因此小目标的检测效果不好    
+
+* **[DSSD]** DSSD: Deconvolutional Single Shot Detector       
+   DSSD相比SSD做了两点改变，一是低分辨率语义信息和高分辨率边缘信息的融合，类似FPN的结构，但使用了反卷积层，提高小目标的检测效果；二是在分类和回归的预测模块中，将卷积层替换为残差层，提高准确率     
 
 * **[RefineDet]** Single-Shot Refinement Neural Network for Object Detection **[CVPR' 18]**    
    一阶段方法检测精度低的一个主要原因是类别不平衡问题。RefineDet提出ARM和ODM两个阶段，前者过滤掉简单的负Anchor，为第二阶段的分类器减少搜索空间，并粗调回归框，为第二阶段的回归器提供更好的初始候选框，类似RPN阶段；后者进行精调，类似SSD阶段。训练上，第一阶段使用logit loss，得分低于0.01的Anchor被过滤，第二阶段使用OHEM    
