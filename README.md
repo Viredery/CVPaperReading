@@ -10,10 +10,10 @@
 
 - Detection
 - Segmentation
+- ImageClassification
 
 ### TODO
 
-- ImageClassification
 - PoseEstimation
 - ReIdentification
 - Tracking

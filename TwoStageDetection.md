@@ -187,12 +187,16 @@
 
 1. 领域迁移
 
-   * Domain Adaptive Faster R-CNN for Object Detection in the Wild    
-   * Few-shot Adaptive Faster R-CNN   
-   * Strong-Weak Distribution Alignment    
+   * Domain Adaptive Faster R-CNN for Object Detection in the Wild **[CVPR' 18]**   
+      目标检测的领域迁移问题，主要考虑两方面，图像迁移P(I)和目标迁移P(B,I)，文章分别训练两个判别器，使其无法区分两个域的图像和目标，除此之外，还添加了一致性正则化损失项，保证两个层面的域分类结果一致         
+
+   * Strong-Weak Distribution Alignment for Adaptive Object Detection **[CVPR' 19]**    
+      这篇文章没有考虑目标迁移，而是在图像迁移中，考虑了高分辨率局部信息和低分辨率全局信息的领域问题。对高分辨率局部信息，使用交叉熵损失进行强对齐；对低分辨率全局信息使用focal loss进行弱对齐       
+   * Few-shot Adaptive Faster R-CNN       
 
 2. 蒸馏
 
    * Quantization Mimic: Towards Very Tiny CNN for Object Detection   
+      直接对backbone feature map进行蒸馏效果不好。因此文章对RoIPooling的输出进行蒸馏。此外，将feature map量化，减少了函数的输出空间，降低了学习的难度      
    
 3. 图网络学习

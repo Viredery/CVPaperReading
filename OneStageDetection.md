@@ -49,8 +49,7 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 ### 三、RetinaNet
 
 * **[RetinaNet]** Focal Loss for Dense Object Detection **[ICCV' 17]**     
-   RetinaNet直接使用大尺度的输入图片和大网络backbone，导致严重的不平衡问题，因此引入了Focal Loss。Focal Loss类似于一种boosting的方式，在使用时需要初始化最后一层Conv或FC层的偏差，以防梯度爆炸。    
-
+   RetinaNet直接使用大尺度的输入图片和大网络backbone，导致严重的不平衡问题，因此引入了Focal Loss。Focal Loss类似于一种boosting的方式，在使用时需要初始化最后一层Conv或FC层的偏差，以防梯度爆炸    
 
 * **[ConRetinaNet]** Consistent Optimization for Single-Shot Object Detection    
    提出了训练和测试的不一致问题：训练过程中，设置IoU大于0.5为正例，进行分类和回归计算，但在测试过程中，将原始Anchor训练的得分赋给经过回归调整之后的Anchor。统计发现，分类得分的方差随着IoU的增长会不断变大。
@@ -61,9 +60,7 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 ### 四、Anchor Free
 
-
 这里面的大多数网络，都是将基于框（Anchor）的检测任务替换成了基于位置（像素点）的检测任务。最近一年，这种Anchor-Free的方法获得了和Anchor-based方法相近的效果，主要得益于：1）FPN的引入，不同大小的目标会被分配到不同的特征图上，减缓了目标之间互相遮挡、不同目标分配到同一个位置上等问题；2）Focal Loss的引入，使得候选的位置可以尽可能多地覆盖原图      
-
 
 * **[DenseBox]** DenseBox: Unifying Landmark Localization with End to End Object Detection    
    DenseBox这个模型和YOLO一样，是工业界常用的实时目标检测模型。直接预测目标框的坐标相对于像素位置的偏移；引入了landmark任务作为辅助监督；多尺度特征的融合；数据增强等
