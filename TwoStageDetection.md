@@ -197,6 +197,8 @@
 2. 蒸馏
 
    * Quantization Mimic: Towards Very Tiny CNN for Object Detection   
-      直接对backbone feature map进行蒸馏效果不好。因此文章对RoIPooling的输出进行蒸馏。此外，将feature map量化，减少了函数的输出空间，降低了学习的难度      
+      常见的模型压缩方法有：量化（BinaryNet）、分组卷积（ShuffleNet、MobileNet）、剪枝和 Mimic。Mimic 前身是知识蒸馏，属于迁移学习          
+      算法过程：1、训练一个 FP32 的教师网络（Teacher Network）。2、对 feature map 进行量化，得到量化后的教师网络。3、Teacher-Student Network，得到一个量化后的学生网络       
+      直接对backbone feature map进行蒸馏效果不好。因此文章对RoIPooling的输出进行蒸馏。此外，量化后的网络的 feature map 的搜索空间会减少很多，更容易训练            
    
 3. 图网络学习

@@ -5,12 +5,12 @@
 
 - TwoStageDetection
 - OneStageDetection
+- Detection
+- ImageClassification
 
 ### Doing
 
-- Detection
 - Segmentation
-- ImageClassification
 
 ### TODO
 
