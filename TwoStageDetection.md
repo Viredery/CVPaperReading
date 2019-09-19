@@ -40,6 +40,9 @@
     * **[HRNet]** Deep High-Resolution Representation Learning for Human Pose Estimation **[CVPR' 19]**    
        该模型是通过在高分辨率特征图主网络逐渐并行加入低分辨率特征图子网络，不同网络实现多尺度融合与特征提取实现的。    
 
+    * **[CBNet]** CBNet: A Novel Composite Backbone Network Architecture for Object Detection        
+       类似于模型融合的方法，但是CBNet把多个backbones放在一起训练，不同的backbones之间有信息的流动              
+
 2. 模块设计
 
     * **[DCN]** Deformable Convolutional Networks **[ICCV' 17]**    
@@ -83,17 +86,15 @@
 1. 网络结构改进
 
    * **[GA-RPN]** Region Proposal by Guided Anchoring **[CVPR' 19]**      
-      大多数解决方案，都是根据不同的数据集，去设计每个位置的预选框（Anchor）的尺度和长宽比（即调参，调整先验假设）。GA-RPN是训练过程中指导预选框的生成。对每层特征图的每一个位置，通过训练去预测这个位置对应的预选框的高和宽(**Bounded IoU Loss**)。
+      大多数解决方案，都是根据不同的数据集，去设计每个位置的预选框（Anchor）的尺度和长宽比（即调参，调整先验假设）。GA-RPN是训练过程中指导预选框的生成。对每层特征图的每一个位置，通过训练去预测这个位置对应的预选框的高和宽(**Bounded IoU Loss**)    
+
+   * **[Cascade RPN]** Cascade RPN: Delving into High-Quality Region Proposal Network with Adaptive Convolution  **[NIPS' 19]**       
+      Cascade RPN引入了一种新的卷积层Adaptive Conv，类似于AlignDet。和GA-RPN类似，每个位置回归一个Anchor Box，第一个阶段预测Anchor Box和GT的偏移，这里预测偏移包括中心点x，y的偏移值（GA-RPN只预测w和h），然后使用Adaptive Conv进一步地修正第一阶段输出的Box           
 
 
-2. 采样方式改进
+2. Anchor机制
 
-   * **[Libra R-CNN]** Libra R-CNN: Towards Balanced Learning for Object Detection **[CVPR' 19]**    
-      常规过程中，一个短边800像素的图片，会产生20万左右的Anchor，绝大多数都是负样本，随机进行采样，会产生很多简单背景作为负样本，无法很好地把握目标和非目标之间的辨识度。Libra R-CNN提出了一种基于IoU的采样方式。
-
-3. Anchor机制
-
-   * 19年出了很多Anchor-Free的论文，其实两阶段网络也可能完全舍弃Anchor机制。比如将RPN部分换成**FCOS**的头(Head)，RCNN部分保持不变，或者换成**Grid RCNN**等。这里没提改进，是因为目标我们没法证明其中一种方法优于另一种。
+   * 19年出了很多Anchor-Free的论文，其实两阶段网络也可能完全舍弃Anchor机制。比如将RPN部分换成**FCOS**的头(Head)，RCNN部分保持不变，或者换成**CerterNet**等。使用Anchor-Free，不一定效果一定会优于基于Anchor的方法
 
 ### 五、RoI池化方式
 
@@ -153,34 +154,43 @@
 * **[Soft-NMS]** Improving Object DetectionWith One Line of Code **[ICCV' 17]**    
    对于两个距离很近的目标，在NMS过程中可能会因为IoU过大而被舍弃。Soft-NMS不会舍弃预测出来的框，而是将得分次高的框的得分进行抑制。
 
-* Prime Sample Attention in Object Detection    
-   这篇论文的出发点和上面几篇不一样。大多数情况下，一个共识是，大量的简单样本对模型的参数更新方向的帮助不大（一个例子，比如Triplet Loss中，随机选三元组可能会训不起来，而在同一个batch里做难样本挖掘来生成三元组却有效果）。而这篇论文，在做回归损失的时候，降低了难样本的权重，提高简单样本的权重。论文给出的动机是，在NMS阶段，更好质量的框会保留下来，其他的框被丢弃的，那么，影响最后的指标的是训练过程中的简单样本。刚好与难样本挖掘反其道而行之       
    
 
 
 ### 八、训练方式
 
-* Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour    
-   **[MegNet]** MegDet: A Large Mini-Batch Object Detector    
-   这两篇论文介绍了在大batch size的情况下，如何训练模型。    
-   对于目标检测任务，由于输入图片的尺度较大，导致batch size一般只能设置为1或者2，在这种情况下无法计算BN的准确统计量。这是因为batch较小时，BN计算的统计量存在一定的偏向性(bias)，正负样本的比例也存在着抖动和严重的不平衡。因此需要Cross-GPU BN，即SyncBN，来增加每一次更新所需要统计的图像数量。（这里，batch size和BN size不一定相等）     
-   外此对于学习率，linear scaling rule和warmup结合的策略加快训练。linear scaling rule策略：一般两阶段阶段实验中常用的设置是batch size为16，学习率为0.02，那么这个策略就是batch size增大多少倍，学习率就增大同样的倍数。在网络训练初期，较大的学习率导致梯度变化剧烈，因此引入warmup策略      
-   
-* **[OHEM]** Training Region-based Object Detectors with Online Hard Example Mining **[CVPR' 16]**    
-   各种问题下的常用Tricks
-   
-* Rethinking ImageNet Pre-training   
-   指出不使用预训练模型，在较长的训练时间下，可以得到不劣于使用预训练分类权重的模型   
-   
-* **[RePr]** RePr: Improved Training of Convolutional Filters **[CVPR' 19]**       
-   一种学习率Schedule方法
 
-* Bag of Tricks for Image Classification with Convolutional Neural Networks    
-  Bag of Freebies for Training Object Detection Neural Networks    
-   分类和检测的Tricks
+1. 大批量值下的训练
+   * Accurate, Large Minibatch SGD: Training ImageNet in 1 Hour    
+      **[MegNet]** MegDet: A Large Mini-Batch Object Detector    
+      这两篇论文介绍了在大batch size的情况下，如何训练模型。    
+      对于目标检测任务，由于输入图片的尺度较大，导致batch size一般只能设置为1或者2，在这种情况下无法计算BN的准确统计量。这是因为batch较小时，BN计算的统计量存在一定的偏向性(bias)，正负样本的比例也存在着抖动和严重的不平衡。因此需要Cross-GPU BN，即SyncBN，来增加每一次更新所需要统计的图像数量。（这里，batch size和BN size不一定相等）     
+      外此对于学习率，linear scaling rule和warmup结合的策略加快训练。linear scaling rule策略：一般两阶段阶段实验中常用的设置是batch size为16，学习率为0.02，那么这个策略就是batch size增大多少倍，学习率就增大同样的倍数。在网络训练初期，较大的学习率导致梯度变化剧烈，因此引入warmup策略      
+
+2. 采样方式的改进       
+
+   * **[OHEM]** Training Region-based Object Detectors with Online Hard Example Mining **[CVPR' 16]**    
+      各种问题下的常用Tricks
+   
+   * **[Libra R-CNN]** Libra R-CNN: Towards Balanced Learning for Object Detection **[CVPR' 19]**    
+      常规过程中，一个短边800像素的图片，会产生20万左右的Anchor，绝大多数都是负样本，随机进行采样，会产生很多简单背景作为负样本，无法很好地把握目标和非目标之间的辨识度。Libra R-CNN提出了一种基于IoU的采样方式
+
+   * Prime Sample Attention in Object Detection    
+      大多数情况下，一个共识是，大量的简单样本对模型的参数更新方向的帮助不大（一个例子，比如Triplet Loss中，随机选三元组可能会训不起来，而在同一个batch里做难样本挖掘来生成三元组却有效果）。而这篇论文，在做回归损失的时候，降低了难样本的权重，提高简单样本的权重。论文给出的动机是，在NMS阶段，更好质量的框会保留下来，其他的框被丢弃的，那么，影响最后的指标的是训练过程中的简单样本。刚好与难样本挖掘反其道而行之。让回归损失和分类的 score 相关，从而使得梯度可以从 regression branch 流到 classification branch       
+
+3. 训练流程的探索      
+   * Rethinking ImageNet Pre-training   
+      指出不使用预训练模型，在较长的训练时间下，可以得到不劣于使用预训练分类权重的模型   
+   
+   * **[RePr]** RePr: Improved Training of Convolutional Filters **[CVPR' 19]**       
+      一种学习率Schedule方法
+
+   * Bag of Tricks for Image Classification with Convolutional Neural Networks    
+      Bag of Freebies for Training Object Detection Neural Networks    
+      分类和检测的Tricks
   
-* Learning Data Augmentation Strategies for Object Detection    
-   目前两阶段最常见的数据增强为随机水平翻转。其他还有随便裁剪，颜色扰动，Mixup等，本文通过AutoML方法自动学习有效的数据增强策略
+   * Learning Data Augmentation Strategies for Object Detection    
+      目前两阶段最常见的数据增强为随机水平翻转。其他还有随便裁剪，颜色扰动，Mixup等，本文通过AutoML方法自动学习有效的数据增强策略
   
 
 ### 九、其他目标检测
@@ -192,6 +202,7 @@
 
    * Strong-Weak Distribution Alignment for Adaptive Object Detection **[CVPR' 19]**    
       这篇文章没有考虑目标迁移，而是在图像迁移中，考虑了高分辨率局部信息和低分辨率全局信息的领域问题。对高分辨率局部信息，使用交叉熵损失进行强对齐；对低分辨率全局信息使用focal loss进行弱对齐       
+
    * Few-shot Adaptive Faster R-CNN       
 
 2. 蒸馏

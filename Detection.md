@@ -3,7 +3,6 @@
 检测任务作为一个基础任务，在工业界运用广泛。很多机器学习项目的整个pipeline中的第一步就是检测，这时，可以选择一个低延迟的检测网络，尽可能地减少检测的耗时，如YOLO、DenseBox；也可以选择一个基于区别的多任务网络来并行得执行多个任务。这篇笔记的重点将不是从模型本身去改进检测效果，而从任务目标，从问题场景上，针对不同的问题去讨论优化的方向     
 
 
-
 ### 一、小目标检测    
 
 
@@ -63,10 +62,18 @@
 
 ### 六、一些探讨
 
-1. 不同类别目标之间的关联      
-2. 固定摄像头（固定背景Context）   
-3. 检测问题排查     
-4. 目标的Representation    
+1. Cascade结构      
+   讨论下Cascade RCNN, HTC, ConRetineNet, Cascade RPN, AlignDet       
+
+2. 目标检测中的不平衡问题       
+   Imbalance Problems in Object Detection: A Review       
+   Are Sampling Heuristics Necessary in Object Detectors?         
+   类别不平衡、尺度不平衡、空间不平衡、多任务损失优化之间的不平衡   
+
+3. 不同类别目标之间的关联      
+4. 固定摄像头（固定背景Context）   
+5. 检测问题排查     
+6. 目标的Representation    
  
 
 

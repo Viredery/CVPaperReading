@@ -81,9 +81,10 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 * **[CenterNet]** Objects as Points    
    类似人体姿态评估的做法，输出两个热力图，一个预测目标的中心点，一个预测目标的长和宽。这里，只有一个特征图去预测目标的类型和位置        
 
-* FoveaBox: Beyond Anchor-based Object Detector   
+* FoveaBox: Beyond Anchor-based Object Detector     
 
-
+* **[RepPoints]** RepPoints: Point Set Representation for Object Detection      
+   不选择四个点（边框）来表示一个物体，而是利用了分割信息，为一个物体选择一个代表性的点集，利用可变形卷积来学习点集信息，最后的回归框由代表性点集的外包矩形来表示        
 
 ### 五、AlignDet   
 
