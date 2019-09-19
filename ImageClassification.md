@@ -19,7 +19,7 @@
 
 6. Inception系列    
 
-   Inception系列论文指出CNN的通用设计思想：1、通常，随着网络层数增加，空间特征数逐渐降低，通道数逐渐增加；2、不要过度压缩损失精度信息，避免表征瓶颈。3、增加非线性特征可以解耦合特征；4、卷积的实现形式为空间聚合【spatial aggregation】；5、1x1卷积降维不会产生严重的影响。猜测：相邻通道之间具有强相关性，卷积前降维基本不会损失信息         
+   Inception系列论文指出CNN的通用设计思想：1、通常，随着网络层数增加，空间特征数逐渐降低，通道数逐渐增加；2、不要过度压缩损失精度信息，避免表征瓶颈。3、增加非线性特征可以解耦合特征；4、卷积的实现形式为空间聚合；5、1x1卷积降维不会产生严重的影响。猜测：相邻通道之间具有强相关性，卷积前降维基本不会损失信息         
    Inception 模块的目的是设计一种具有优良局部拓扑结构的网络，即对输入图像并行地执行多个卷积运算或池化操作，并将所有输出结果拼接为一个非常深的特征图。因为 1*1、3*3 或 5*5 等不同的卷积运算与池化操作可以获得输入图像的不同信息，并行处理这些运算并结合所有结果将获得更好的图像表征      
 
    * **[Inception v1]** Going deeper with convolutions       
@@ -42,7 +42,7 @@
    * **[ResNet v2]** Identity Mappings in Deep Residual Networks      
       尝试了多种恒等映射的方法，发现shortcut的效果最好。尝试多种卷积堆叠（残差）的方法，发现BN-ReLU-Conv-BN-ReLU-Conv的方法，优于ResNet中的Conv-BN-ReLU-Conv-BN的方法        
 
-   * **[ResNeXt]** Aggregated Residual Transformations for Deep Neural Networks 
+   * **[ResNeXt]** Aggregated Residual Transformations for Deep Neural Networks       
       指出 Inception 过于复杂，不易迁移到其他问题上；ResNet 存在 diminishing feature reuse 的问题。提出了基数的概念，残差块采用 split-transform-merge 的策略，基数类似 group，表示 split 的数目。这种架构可以接近 large and dense layers 的表示能力，但只需要很少的计算资源        
 
    * Wide Residual Networks        
@@ -70,10 +70,10 @@
 
 2. **[Xception]** Xception: Deep Learning with Depthwise Separable Convolutions    
    Xception 相当于借鉴了 depth-wise 的思想，简化了 Inception-v3。Xception的结构是，输入的 feature maps 先经过一个1x1卷积，然后将输出的每一个 feature map 后面连接一个3x3的卷积（再逐通道卷积），然后将这些3x3卷积的输出连接起来     
-   和MobileNet v1的区别是，1x1卷积和3x3卷积的先后次序        
+   【和MobileNet v1的区别在于1x1卷积和3x3卷积的先后次序】     
 
 3. MobileNet系列    
-   * **[MobileNet v1]** Mobilenets: Efficient Convolutional Neural Networks for Mobile Vision Applications
+   * **[MobileNet v1]** Mobilenets: Efficient Convolutional Neural Networks for Mobile Vision Applications        
       MobileNet 的基本结构是 3x3 depth-wise Conv 加 1x1 Conv。1x1卷积使得输出的每一个 feature map 要包含输入层所有 feature maps 的信息。这种结构减少了网络参数的同时还降低了计算量。整个 MobileNet 就是这种基本结构堆叠而成。其中没有池化层，而是将部分的 depth-wise Conv 的 stride 设置为2来减小 feature map 的大小      
 
    * **[MobileNet v2]** MobileNetV2: Inverted Residuals and Linear Bottlenecks      
@@ -87,6 +87,8 @@
       ShuffleNet 认为 depth-wise 会带来信息流通不畅的问题，利用 group convolution 和 channel shuffle 这两个操作来设计卷积神经网络模型, 以减少模型使用的参数数量，同时使用了 ResNet 中的短路连接。ShuffleNet 通过多个 Shuffle Residual Blocks 堆叠而成     
 
    * **[ShuffleNet v2]** ShuffleNet V2: Practical Guidelines for Ecient CNN Architecture Design    
+      这篇文章讨论了设计一个推断高效的网络的准则。FLOPs反应了模型的计算量，但无法直接反应推断速度（或者吞吐量）。一、当输入、输出channels数目相同时，conv计算所需的MAC(memory accesscost)最为节省。二、过多的group convolution会加大MAC开销。三、网络结构整体的碎片化（如Inception）会减少其可并行优化的程序。四、element-wise操作会消耗较多的时间，不可小视。
+      ShuffleNet v2抛弃了v1中的1x1的Group Conv，而是直接使用了输入输出channels数相同的1x1 Conv和3x3 DWConv。提出了一种ChannelSplit新的类型操作，将module的输入channels分为两部分，一部分直接向下传递，另外一部分则进行真正的向后计算。到了module的末尾，直接将两分支上的output channels数目级连起来          
 
 ### 三、AutoML系列网络
 
@@ -105,4 +107,33 @@
 
 ### 五、分类损失函数     
 
+1. Softmax
 
+   Softmax、Softmax with temperature parameter、Label Smoothing、多标签分类时Softmax和Sigmoid的联系       
+   Softmax with temperature parameter相当于一种soft Softmax方法。在工程使用时，所有的输入值都减去输入值中的最大值，对分母加一，以防止上溢下溢                
+
+2. Focal loss      
+   soft sampling方法，降低简单样本的损失值的权重，而更加关注难样本比如属于rare class的样本          
+
+3. Center loss       
+   Softmax尽可能地将不同类别的样本分开，但没有考虑样本特征的可辨别性。center loss引入了每一个类别的样本的中心点，在Softmax的基础上，计算一个距离函数，令同一个类别的样本都聚集在该类别的中心点上，提高类内聚合       
+   Contrastive center loss      
+   Center loss只考虑类内聚合，没有考虑类间分离，Contrastive center loss增加了一个分母项，拉远该类别样本到其他类别的中心点的距离       
+
+4. ArcFace loss    
+   
+   * **[L-Softmax]** Large-Margin Softmax Loss for Convolutional Neural Networks **[ICML' 16]**     
+      将Wx分解为||W|| * ||x|| * cos(theta)，为了提高类内紧凑性和类间分离性，对于正确类，计算cos(m*theta) （需要保证单调下降），对于其他类，不乘参数m，即计算cos(theta)      
+      m控制类别之间的差距. 随着m越大(在相同的训练损失下)，类之间的margin变得越大, 学习困难也越来越大         
+
+   * **[A-Softmax]** SphereFace: Deep Hypersphere Embedding for Face Recognition **[CVPR' 17]**      
+      相比L-Softmax而言，A-Softmax将||W||固定为1，训练的时候加入Softmax帮助收敛       
+  
+   * F-Norm SphereFace      
+      相比A-Softmax而言，F-Norm SphereFace对特征也做了正则化，使得||W||固定为1，现在||W|| * ||x|| * cos(theta)变成了s * cos(m * theta)       
+
+   * CosineFace     
+      相比F-Norm SphereFace，CosineFace将s * cos(m * theta)变成了s * (cos(theta) - m)      
+
+   * **[ArcFace]** ArcFace: Additive Angular Margin Loss for Deep Face Recognition      
+      相比CosineFace，ArcFace将s * (cos(theta) - m)变成了s * cos(theta + m)      
