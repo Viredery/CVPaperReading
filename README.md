@@ -10,11 +10,11 @@
 
 ### Doing
 
-- Segmentation
-- PoseEstimation
+- ReIdentification
+- Tracking
 
 ### TODO
 
-- ReIdentification
-- Tracking
+- Segmentation
+- PoseEstimation
 - ModelCompression
