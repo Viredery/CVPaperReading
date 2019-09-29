@@ -31,8 +31,14 @@
    在训练方式上，对 Softmax Loss 和 Triplet Loss 这两个任务进行动态训练。一方面调整两个任务的权重是一个耗时的工作，另一方面在训练过程中的不同的阶段两个任务的最佳权重可能会发生改变。而且不仅仅是调整权重的问题，两个任务的采样方式也不相同。动态训练：训练开始的时候使用随机采样，只使用Softmax Loss；随便训练地进行，使用ID-balanced hard triplet采样，以及Softmax Loss和Triplet Loss的加权和损失。这个根据Softmax Loss和Triplet Loss相比上一个batch的下降程度来动态地调整采样方式和损失权重        
 
 
-7. A Strong Baseline and Batch Normalization Neck for Deep Person Re-identification **[CVPR' 19 TRMTMCT Workshop]**
+7. A Strong Baseline and Batch Normalization Neck for Deep Person Re-identification **[CVPR' 19 TRMTMCT Workshop]**     
    介绍了Re-ID的常见的模块设计和训练策略等。训练：Warmup、Random Erasing Augmentation、Label Smoothing       
    模块：Last Stride 从2改成1；embedding一方面经过Triplet loss，另一个方面过BN层后，经过ID loss，推断阶段使用BN层输出的embedding值；使用Center Loss    
 
 ### 二、基于视频的行人重识别方法
+
+1. Revisiting Temporal Modeling for Video-based Person ReID     
+   算是对之前的方法进行较公平的比较。基于 clip 的 Re-ID 方法一般分为三个阶段：image-level feature extractor，把连续帧的图片映射成特征；temporal modeling，把连续的特征序列合为一个特征；loss function     
+   特征提取，可以使用 3D Conv 和 2D Conv；时序建模，可以通过池化、RNN、Attention 等方法       
+   损失函数，为 Softmax CELoss 和 Triplet Loss 的结合     
+
