@@ -38,6 +38,9 @@
 * Repulsion Loss: Detecting Pedestrians in a Crowd **[CVPR' 18]**     
    从损失函数的角度，让不同GT对应的Anchor的回归距离尽可能地拉远        
 
+* A-Fast-RCNN: Hard Positive Generation via Adversary for Object Detection    
+   从数据集角度，通过GAN生成更多的难正样本，主要是覆盖遮挡和形变问题        
+
 ### 三、行人检测      
 
 行人检测的主要问题就是上面提及的遮挡问题，以及小目标情况下的可辨别性较弱，容易漏检             
@@ -50,6 +53,8 @@
 * **[FaceNet]** FaceNet: A Unified Embedding for Face Recognition and Clustering **[CVPR' 15]**     
 
 * **[MTCNN]** Joint Face Detection and Alignment using Multi-task Cascaded Convolutional Networks    
+
+* PyramidBox: A Context-assisted Single Shot Face Detector    
 
 * **[DSFD]** DSFD: Dual Shot Face Detector **[CVPR '19]**       
 

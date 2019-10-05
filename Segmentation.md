@@ -43,6 +43,7 @@
 4. **[MS R-CNN]** Mask Scoring R-CNN **[CVPR' 19]**     
 5. Learning to Segment Every Thing **[CVPR' 18]**     
 
+6. TensorMask: A Foundation for Dense Object Segmentation     
 
 ### 三、全景分割
 
