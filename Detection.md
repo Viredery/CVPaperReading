@@ -74,6 +74,10 @@
    Imbalance Problems in Object Detection: A Review       
    Are Sampling Heuristics Necessary in Object Detectors?         
    类别不平衡、尺度不平衡、空间不平衡、多任务损失优化之间的不平衡   
+   类别不平衡: Focal Loss     
+   尺度不平衡: Consistent Scale Normalization for Object Recognition   
+   空间不平衡: Libra R-CNN、 Cascade R-CNN    
+   多任务损失优化之间的不平衡: 调整loss weight，Prime Sample Attention   
 
 3. 不同类别目标之间的关联      
 4. 固定摄像头（固定背景Context）   

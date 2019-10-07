@@ -23,7 +23,7 @@
    * **[SNIP]** An Analysis of Scale Invariance in Object Detection – SNIP **[CVPR' 18]**   
       输入为图像金字塔，对于图像金字塔中的每一个图像，仅选择固定尺度范围内的目标进行训练（反向传播）。也就是说，原图像放大后仅检测小目标，原图像缩小后仅检测大目标。由于每个目标在训练时都会有几个不同的尺寸，那么总有一个尺寸是在指定的尺寸范围内。
 
-   * **[TridentNet]** Scale-Aware Trident Networks for Object Detection **[CVPR' 19]**    
+   * **[TridentNet]** Scale-Aware Trident Networks for Object Detection **[ICCV' 19]**    
       输出多个不同感受野的特征图。以ResNet50为例，将Stage5卷积移至RCNN，将Stage4分成三个分支，不同分支中的3x3卷积的dilated分别设置为1，2和3，不同分支共享权重。同时，对于不同的分支，选择特定尺度范围内的目标进行训练（反向传播）。也就是说小目标和大目标分别在不同的分支中检测，最后三个分支的预测结果通过NMS结合起来。
 
 

@@ -67,10 +67,11 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 * **[CornerNet]** CornerNet: Detecting Objects as Paired Keypoints **[ECCV' 18]**      
    CornerNet-Lite: Efficient Keypoint Based Object Detection    
+   CenterNet: Object Detection as Keypoint Triplets **[CVPR' 19]**    
    CornerNet不再是基于Anchor或者是基于位置点，而是输出两个热力图，分别预测目标的一对关键点（左上角和右下角），同时预测关键点的Offsets得到更精准的位置。最后，预测一个embedding值，来拉近相关的关键点，拉远不相关的关键点     
-    介绍了一种叫做Corner Pooling的方式，以及一种embedding的训练方式     
+   介绍了一种叫做Corner Pooling的方式，以及一种embedding的训练方式     
  
-* **[FCOS]** FCOS: Fully Convolutional One-Stage Object Detection      
+* **[FCOS]** FCOS: Fully Convolutional One-Stage Object Detection **[ICCV' 19]**     
    NAS-FCOS: Fast Neural Architecture Search for Object Detection     
    输出三组特征图，分别是每一个像素点应该分配的目标，该像素点到目标的边界的距离，以及该像素点到目标中心的距离     
 
@@ -83,7 +84,7 @@ SSD系列其实有很多文章，但我只看过最早的SSD。相比于YOLO系�
 
 * FoveaBox: Beyond Anchor-based Object Detector     
 
-* **[RepPoints]** RepPoints: Point Set Representation for Object Detection      
+* **[RepPoints]** RepPoints: Point Set Representation for Object Detection **[ICCV' 19]**     
    不选择四个点（边框）来表示一个物体，而是利用了分割信息，为一个物体选择一个代表性的点集，利用可变形卷积来学习点集信息，最后的回归框由代表性点集的外包矩形来表示        
 
 ### 五、AlignDet   
